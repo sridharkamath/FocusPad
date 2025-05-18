@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run FocusPad",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/focuspad/main.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}

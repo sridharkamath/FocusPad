@@ -1,0 +1,18 @@
+{
+  // Tell VS Code to use the Conda env’s interpreter
+  "python.defaultInterpreterPath": "${workspaceFolder}/.conda/focuspad/python.exe",
+
+  // Auto-format Python with Black
+  "python.formatting.provider": "black",
+
+  // Enable pytest discovery
+  "python.testing.pytestEnabled": true,
+
+  // Add the source package to PYTHONPATH at runtime
+  "terminal.integrated.env.windows": {
+    "PYTHONPATH": "${workspaceFolder}/focuspad"
+  },
+
+  // Load secrets from .env when you press Run / Debug
+  "python.envFile": "${workspaceFolder}/.env"
+}
