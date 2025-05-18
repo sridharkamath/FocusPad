@@ -1,6 +1,6 @@
 from pathlib import Path
 from datetime import datetime
-from PySide6.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QApplication
+from PySide6.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QApplication, QHBoxLayout
 from PySide6.QtCore import Qt, QTimer
 import logging
 
@@ -27,11 +27,22 @@ class JournalWidget(QWidget):
         self.editor = QTextEdit(placeholderText="Stay focused… jot your thoughts")
         layout.addWidget(self.editor)
 
+        # ─── Buttons layout ───────────────────────────────────
+        button_layout = QHBoxLayout()
+        
+        # ─── Save button ───────────────────────────────────
+        save_btn = QPushButton("Save")
+        save_btn.setToolTip("Save current text and restart timer")
+        save_btn.clicked.connect(self.manual_save)
+        button_layout.addWidget(save_btn)
+        
         # ─── Close button ───────────────────────────────────
         close_btn = QPushButton("Close")
         close_btn.setToolTip("Close FocusPad and exit")
         close_btn.clicked.connect(QApplication.instance().quit)
-        layout.addWidget(close_btn)
+        button_layout.addWidget(close_btn)
+        
+        layout.addLayout(button_layout)
 
         # ─── Autosave timer ────────────────────────────────
         logger.debug("Starting autosave timer (10s)")
@@ -46,3 +57,12 @@ class JournalWidget(QWidget):
         logger.debug(f"Saving entry ({len(text)} chars) to {out.name}")
         out.write_text(text, encoding="utf-8")
         logger.info(f"Wrote {len(text)} chars to {out}")
+        
+    def manual_save(self):
+        # Save the current text
+        self.save_entry()
+        
+        # Restart the autosave timer
+        logger.debug("Manually saved and restarting autosave timer")
+        self.autosave.stop()
+        self.autosave.start()
