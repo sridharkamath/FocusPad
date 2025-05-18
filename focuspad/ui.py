@@ -34,8 +34,8 @@ class JournalWidget(QWidget):
         layout.addWidget(close_btn)
 
         # ─── Autosave timer ────────────────────────────────
-        logger.debug("Starting autosave timer (60s)")
-        self.autosave = QTimer(self, interval=60_000, timeout=self.save_entry)
+        logger.debug("Starting autosave timer (10s)")
+        self.autosave = QTimer(self, interval=10_000, timeout=self.save_entry)
         self.autosave.start()
 
     def save_entry(self):
