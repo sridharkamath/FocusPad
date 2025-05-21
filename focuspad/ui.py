@@ -11,7 +11,7 @@ try:
         QDateEdit, QGroupBox, QCheckBox, QListWidget
     )
     from PySide6.QtCore import Qt, QTimer, QDate
-    from PySide6.QtGui import QIcon, QPixmap, QMouseEvent
+    from PySide6.QtGui import QIcon, QPixmap, QMouseEvent, QFont
 except ModuleNotFoundError:
     from PyQt6.QtWidgets import (
         QWidget, QTextEdit, QVBoxLayout, QHBoxLayout,
@@ -19,7 +19,7 @@ except ModuleNotFoundError:
         QDateEdit, QGroupBox, QCheckBox, QListWidget
     )
     from PyQt6.QtCore import Qt, QTimer, QDate
-    from PyQt6.QtGui import QIcon, QPixmap, QMouseEvent
+    from PyQt6.QtGui import QIcon, QPixmap, QMouseEvent, QFont
 
 # Configure logging
 logger = logging.getLogger("focuspad.ui")
@@ -50,6 +50,15 @@ class JournalWidget(QWidget):
         sidebar = QVBoxLayout()
         sidebar.setContentsMargins(8, 8, 8, 8)
         sidebar.setSpacing(10)
+        
+        # App name label (bold, fancy)
+        app_name = QLabel("FocusPad")
+        font = QFont()
+        font.setPointSize(18)
+        font.setBold(True)
+        app_name.setFont(font)
+        app_name.setAlignment(Qt.AlignCenter)
+        sidebar.addWidget(app_name)
 
         # Logo
         logo_label = QLabel()
@@ -66,6 +75,18 @@ class JournalWidget(QWidget):
         greet = QLabel("Hi, Sridhar!")
         greet.setAlignment(Qt.AlignCenter)
         sidebar.addWidget(greet)
+        
+        # Badges placeholder (emojis)
+        badges_layout = QHBoxLayout()
+        badges_layout.setSpacing(0.01)
+        badges = ["🏆", "🎯", "💪", "🚀"]
+        for emoji in badges:
+            badge = QLabel(emoji)
+            badge.setFixedSize(32, 32)
+            badge.setAlignment(Qt.AlignCenter)
+            badge.setStyleSheet("border: 1px solid gray; border-radius: 4px;")
+            badges_layout.addWidget(badge)
+        sidebar.addLayout(badges_layout)
 
         # Pad list
         self.pad_list = QListWidget()
@@ -94,11 +115,6 @@ class JournalWidget(QWidget):
         ctrl_row.addWidget(self.settings_btn)
 
         sidebar.addLayout(ctrl_row)
-
-        # Badges placeholder
-        badge_label = QLabel("Badges")
-        badge_label.setAlignment(Qt.AlignCenter)
-        sidebar.addWidget(badge_label)
 
         # Populate list
         self.load_pads()
@@ -169,6 +185,18 @@ class JournalWidget(QWidget):
 
         # Create initial default page
         self.new_page(initial=True)
+        
+        # Center on screen
+        self.center_window()
+
+    def center_window(self):
+        """Move the window to the center of the primary screen."""
+        screen = QApplication.primaryScreen()
+        if screen:
+            geo = screen.availableGeometry()
+            x = geo.x() + (geo.width() - self.width()) // 2
+            y = geo.y() + (geo.height() - self.height()) // 2
+            self.move(x, y)
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
